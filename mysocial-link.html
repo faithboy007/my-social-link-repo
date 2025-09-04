@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Elegant Social Links</title>
+  <meta name="description" content="A polished, accessible, award‑worthy social link card built with only HTML and CSS." />
+  <style>
+    /* ---------- Design Tokens ---------- */
+    :root{
+      --bg: #0b0f14;
+      --fg: #e7edf3;
+      --muted: #9fb0c2;
+      --card: #0f1520cc; /* translucent */
+      --border: #223046;
+      --accent-start: #6ae3ff;
+      --accent-end: #a78bfa;
+      --accent: #8ab4ff;
+      --ring: #7dd3fc;
+      --shadow: 0 8px 25px rgba(0,0,0,.35);
+      --radius: 22px;
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    }
+
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg: #f7fbff;
+        --fg: #0c1724;
+        --muted: #516170;
+        --card: #ffffffbf;
+        --border: #dbe7f5;
+        --accent-start: #0ea5e9;
+        --accent-end: #8b5cf6;
+        --accent: #2563eb;
+        --ring: #38bdf8;
+        --shadow: 0 10px 30px rgba(15,23,42,.12);
+      }
+    }
+
+    /* ---------- Layout ---------- */
+    html,body{height:100%;}
+    body{
+      margin:0; font-family: var(--font); color:var(--fg); background: var(--bg);
+      background-image:
+        radial-gradient(1200px 800px at 10% -10%, rgba(99,102,241,.18), transparent 60%),
+        radial-gradient(900px 600px at 110% 10%, rgba(56,189,248,.18), transparent 60%),
+        radial-gradient(1000px 700px at 50% 120%, rgba(45,212,191,.12), transparent 60%);
+      display:grid; place-items:center; min-height:100svh; padding: 28px;
+    }
+
+    .card{
+      position:relative; width: min(680px, 95vw); border-radius: var(--radius); 
+      background: linear-gradient(180deg, var(--card), color-mix(in oklab, var(--card), transparent 10%));
+      border:1px solid color-mix(in oklab, var(--border), transparent 25%);
+      box-shadow: var(--shadow);
+      overflow:hidden; isolation:isolate;
+    }
+
+    /* Animated halo */
+    .card::before{
+      content:""; position:absolute; inset:-1px; border-radius: inherit; z-index:-1;
+      background: conic-gradient(from 0deg,
+        var(--accent-start), var(--accent-end), var(--accent-start));
+      filter: blur(22px) saturate(140%);
+      opacity:.25; animation: spin 18s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(1turn);} }
+
+    .inner{ padding: 28px; backdrop-filter: blur(10px);}
+
+    .profile{
+      display:flex; align-items:center; gap:16px; margin-bottom: 18px;
+    }
+    .avatar{ width:64px; height:64px; border-radius: 50%; flex:0 0 64px; overflow:hidden; position:relative; }
+    .avatar::before{ content:""; position:absolute; inset:0; border-radius:inherit;
+      background: radial-gradient(circle at 30% 30%, var(--accent-start), transparent 40%),
+                  radial-gradient(circle at 70% 70%, var(--accent-end), transparent 45%);
+      filter: saturate(130%);
+    }
+    .meta h1{ font-size: clamp(1.1rem, 2vw + .6rem, 1.6rem); margin:0 0 2px; letter-spacing:.2px; }
+    .meta p{ margin:0; color: var(--muted); font-size:.95rem; }
+
+    .badge{
+      display:inline-flex; align-items:center; gap:8px; margin-top:10px; font-size:.8rem; color:var(--fg);
+      background: linear-gradient(0deg, color-mix(in oklab, var(--accent-start) 70%, transparent), color-mix(in oklab, var(--accent-end) 70%, transparent));
+      padding:6px 10px; border-radius:999px; border:1px solid color-mix(in oklab, var(--border), transparent 30%);
+    }
+
+    /* Links grid */
+    .links{ display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:14px; margin-top: 18px; }
+
+    .social{
+      --pad: 14px; --br: 16px;
+      position:relative; display:inline-flex; align-items:center; gap:12px; width:100%;
+      padding: var(--pad) calc(var(--pad) + 2px); border-radius: var(--br); text-decoration:none; color:var(--fg);
+      background:
+        linear-gradient(var(--card), var(--card)) padding-box,
+        linear-gradient(135deg, color-mix(in oklab, var(--accent-start) 75%, transparent), color-mix(in oklab, var(--accent-end) 75%, transparent)) border-box;
+      border:1px solid transparent;
+      transition: transform .25s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease;
+      will-change: transform;
+    }
+
+    .social:hover{ transform: translateY(-3px); box-shadow: 0 12px 26px rgba(0,0,0,.22); }
+    .social:active{ transform: translateY(-1px) scale(.99); }
+
+    .icon{ width:22px; height:22px; display:inline-block; }
+
+    .label{ font-weight: 600; letter-spacing:.2px; }
+    .hint{ margin-left:auto; color: var(--muted); font-size:.85rem; }
+
+    .social:focus-visible{ outline: none; box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 70%, transparent), 0 0 0 6px color-mix(in oklab, var(--ring) 30%, transparent); }
+
+    /* Subtle divider */
+    .divider{ height:1px; margin: 20px 0; background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--border), transparent 40%), transparent); }
+
+    /* Accessibility: reduce motion */
+    @media (prefers-reduced-motion: reduce){
+      .card::before{ animation: none; }
+      .social{ transition: none; }
+      .social:hover, .social:active{ transform: none; }
+    }
+
+    /* Tiny footer note */
+    .foot{ margin-top:18px; font-size:.8rem; color: var(--muted); text-align:center; }
+  </style>
+</head>
+<body>
+  <main class="card" role="region" aria-labelledby="title">
+    <div class="inner">
+      <header class="profile">
+        <div class="avatar" aria-hidden="true"></div>
+        <div class="meta">
+          <h1 id="title">Boluwatife Ayelabowo</h1>
+          <p>Software Engineer • Building reliable systems & delightful UX</p>
+          <span class="badge" aria-hidden="true">Open for collaborations</span>
+        </div>
+      </header>
+
+      <div class="divider" aria-hidden="true"></div>
+
+      <section class="links" aria-label="Social links">
+        <!-- GitHub -->
+        <a class="social" href="https://github.com/" target="_blank" rel="noopener noreferrer" aria-label="GitHub profile">
+          <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.48 2 2 6.58 2 12.26c0 4.51 2.87 8.33 6.84 9.68.5.1.68-.22.68-.49 0-.24-.01-.86-.01-1.69-2.78.62-3.37-1.37-3.37-1.37-.46-1.2-1.13-1.52-1.13-1.52-.93-.65.07-.63.07-.63 1.03.07 1.57 1.08 1.57 1.08.91 1.59 2.38 1.13 2.96.86.09-.68.36-1.13.65-1.39-2.22-.26-4.56-1.14-4.56-5.08 0-1.12.39-2.03 1.03-2.75-.1-.25-.45-1.29.1-2.69 0 0 .84-.27 2.75 1.05a9.38 9.38 0 0 1 5 0c1.9-1.32 2.74-1.05 2.74-1.05.55 1.4.2 2.44.1 2.69.64.72 1.03 1.63 1.03 2.75 0 3.95-2.34 4.82-4.57 5.07.37.32.69.95.69 1.92 0 1.39-.01 2.51-.01 2.85 0 .27.18.6.69.49A10.02 10.02 0 0 0 22 12.26C22 6.58 17.52 2 12 2Z"/></svg>
+          <span class="https://github.com/faithboy007">GitHub</span>
+          <span class="hint">my-github-handle</span>
+        </a>
+
+        <!-- LinkedIn -->
+        <a class="social" href="https://www.linkedin.com/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile">
+          <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5A2.5 2.5 0 1 0 5 8.5a2.5 2.5 0 0 0-.02-5Zm-.9 6.5H8v10H4.08v-10ZM9.5 10h3.77v1.36h.05c.52-.98 1.8-2.02 3.7-2.02 3.96 0 4.69 2.6 4.69 5.98V20h-3.92v-3.96c0-.94-.02-2.16-1.32-2.16-1.33 0-1.53 1.03-1.53 2.09V20H10V10h-.5Z"/></svg>
+          <span class="https://www.linkedin.com/in/boluwatife-ayelabowo-007573259/">LinkedIn</span>
+          <span class="hint">Connect</span>
+        </a>
+
+        <!-- X / Twitter -->
+        <a class="social" href="https://twitter.com/" target="_blank" rel="noopener noreferrer" aria-label="X (formerly Twitter) profile">
+          <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2H21l-6.53 7.46L22 22h-6.98l-4.57-6.2L4.98 22H2l7.03-8.03L2 2h7.02l4.18 5.64L18.244 2Zm-1.223 18h1.55L7.06 4h-1.6l11.56 16Z"/></svg>
+          <span class="https://www.linkedin.com/in/boluwatife-ayelabowo-007573259/">X</span>
+          <span class="hint">Follow</span>
+        </a>
+
+        <!-- Instagram -->
+        <a class="social" href="https://instagram.com/" target="_blank" rel="noopener noreferrer" aria-label="Instagram profile">
+          <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7Zm5 3.5A5.5 5.5 0 1 1 6.5 13 5.5 5.5 0 0 1 12 7.5Zm0 2A3.5 3.5 0 1 0 15.5 13 3.5 3.5 0 0 0 12 9.5Zm5.25-3.25a1.25 1.25 0 1 1-1.25 1.25 1.25 1.25 0 0 1 1.25-1.25Z"/></svg>
+          <span class="https://www.instagram.com/nft_gurux1234?igsh=MWwzNDRiejhvMGdqbA==">Instagram</span>
+          <span class="hint">Gallery</span>
+        </a>
+
+        <!-- WhatsApp -->
+        <a class="social" href="https://wa.me/2348169076179" target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp">
+          <svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.52 3.48A11.9 11.9 0 0 0 12.06 0 12 12 0 0 0 2.19 17.86L0 24l6.3-2.15A11.95 11.95 0 0 0 12.1 24 11.9 11.9 0 0 0 24 12.05a11.9 11.9 0 0 0-3.48-8.57ZM12.1 21.6a9.5 9.5 0 0 1-4.85-1.33l-.35-.2-3.73 1.27 1.3-3.64-.23-.37a9.5 9.5 0 1 1 7.85 4.27Zm5.5-7.05c-.3-.16-1.77-.87-2.04-.97-.27-.1-.47-.16-.67.16-.2.3-.77.97-.95 1.17-.18.2-.35.22-.64.08-.3-.16-1.25-.46-2.38-1.47-.88-.78-1.47-1.74-1.64-2.04-.17-.3 0-.46.13-.62.14-.14.3-.36.45-.54.15-.18.2-.3.3-.5.1-.2.05-.37-.02-.53-.08-.16-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.5-.17 0-.37-.02-.57-.02s-.53.08-.8.37c-.27.3-1.05 1.02-1.05 2.5 0 1.47 1.08 2.9 1.24 3.1.15.2 2.12 3.23 5.14 4.53.72.31 1.29.5 1.73.64.73.23 1.39.2 1.91.12.58-.09 1.77-.72 2.02-1.44.25-.72.25-1.34.17-1.47-.07-.13-.27-.2-.56-.35Z"/></svg>
+          <span class="08169076179">WhatsApp</span>
+          <span class="hint">Let’s chat</span>
+        </a>
+
+    
+      </section>
+
+      <p class="foot">Keyboard friendly • Accessible labels • Motion‑aware • Light/Dark adaptive</p>
+    </div>
+  </main>
+</body>
+</html>
